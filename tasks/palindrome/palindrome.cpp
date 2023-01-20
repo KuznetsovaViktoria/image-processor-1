@@ -1,21 +1,16 @@
 #include "palindrome.h"
 
+#include <algorithm>
+
 bool IsPalindrome(const std::string& str) {
-    size_t ind = str.size() - 1;
-    while (str[ind] == ' ') {
-        --ind;
-    }
+    std::string s1;
+    std::string s2;
     for (size_t i = 0; i < str.size(); ++i) {
-        if (str[i] == ' ') {
-            continue;
-        }
-        if (str[i] != str[ind]) {
-            return false;
-        }
-        --ind;
-        while (str[ind] == ' ') {
-            --ind;
+        if (str[i] != ' ') {
+            s1 += str[i];
         }
     }
-    return true;
+    s2 = s1;
+    reverse(s1.begin(), s1.end());
+    return (s1 == s2);
 }
