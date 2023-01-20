@@ -3,16 +3,16 @@
 #include <cctype>
 
 bool ValidatePassword(const std::string& password) {
-    const int ASCII_LOWER_BOUND = 33;
-    const int ASCII_UPPER_BOUND = 126;
-    const int MUST_NUMBER = 3;
+    const int ascii_lower_bound = 33;
+    const int ascii_upper_bound = 126;
+    const int must_number = 3;
     int upper_used = 0;
     int lower_used = 0;
     int digit_used = 0;
     int other_used = 0;
     for (size_t i = 0; i < password.size(); ++i) {
-        if (!(ASCII_LOWER_BOUND <= static_cast<int>(password[i]) &&
-              static_cast<int>(password[i]) <= ASCII_UPPER_BOUND)) {
+        if (!(ascii_lower_bound <= static_cast<int>(password[i]) &&
+              static_cast<int>(password[i]) <= ascii_upper_bound)) {
             return false;
         }
         if (isupper(password[i]) && upper_used == 0) {
@@ -25,12 +25,12 @@ bool ValidatePassword(const std::string& password) {
             ++other_used;
         }
     }
-    if (upper_used + lower_used + digit_used + other_used < MUST_NUMBER) {
+    if (upper_used + lower_used + digit_used + other_used < must_number) {
         return false;
     }
-    const int LENGTH_LOWER_BOUND = 8;
-    const int LENGTH_UPPER_BOUND = 14;
-    if (!(LENGTH_LOWER_BOUND <= password.size() && password.size() <= LENGTH_UPPER_BOUND)) {
+    const int length_lower_bound = 8;
+    const int length_upper_bound = 14;
+    if (!(length_lower_bound <= password.size() && password.size() <= length_upper_bound)) {
         return false;
     }
     return true;
