@@ -1,13 +1,14 @@
 #include "tests_checking.h"
+#include <deque>
 #include <vector>
 
 std::vector<std::string> StudentsOrder(const std::vector<StudentAction>& student_actions,
                                        const std::vector<size_t>& queries) {
     std::vector<std::string> ans;
-    std::vector<std::string> order;
+    std::deque<std::string> order;
     for (auto& act : student_actions) {
         if (act.side == Side::Top) {
-            order.insert(order.begin(), act.name);
+            order.push_front(act.name);
         } else {
             order.push_back(act.name);
         }
