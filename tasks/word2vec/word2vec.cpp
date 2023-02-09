@@ -15,7 +15,7 @@ std::vector<std::string> FindClosestWords(const std::vector<std::string>& words,
     if (words.size() <= 1) {
         return {};
     }
-    std::vector<std::string> ans;
+    std::vector<std::string> ans = {words[1]};
     int64_t mx = CountProduct(vectors[0], vectors[1]);
     for (size_t i = 2; i < words.size(); ++i) {
         int64_t cnt = CountProduct(vectors[0], vectors[i]);
