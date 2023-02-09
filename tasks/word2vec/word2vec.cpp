@@ -5,7 +5,7 @@
 int64_t CountProduct(const std::vector<int>& a, const std::vector<int>& b) {
     int64_t res = 0;
     for (size_t i = 0; i < a.size(); ++i) {
-        res += a[i] * b[i];
+        res += static_cast<int64_t>(a[i]) * static_cast<int64_t>(b[i]);
     }
     return res;
 }
