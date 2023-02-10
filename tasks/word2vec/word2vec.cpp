@@ -22,7 +22,9 @@ std::vector<std::string> FindClosestWords(const std::vector<std::string>& words,
         if (cnt > mx) {
             mx = cnt;
             ans = {words[i]};
-        } else if (cnt == mx) {
+            continue;
+        }
+        if (cnt == mx) {
             ans.push_back(words[i]);
         }
     }
