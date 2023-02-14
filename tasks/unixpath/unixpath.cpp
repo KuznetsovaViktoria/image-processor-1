@@ -30,11 +30,11 @@ std::string NormalizePath(std::string_view current_working_dir, std::string_view
     }
     std::string ans;
     size_t flag = 0;
-    for (int64_t i = path_vec.size() - 1; i >= 0; --i) {
-        if (path_vec[i] == ".") {
+    for (std::vector<std::string_view>::reverse_iterator it = path_vec.rbegin(); it != path_vec.rend(); ++it ) {
+        if (*it == ".") {
             continue;
         }
-        if (path_vec[i] == "..") {
+        if (*it == "..") {
             ++flag;
             continue;
         }
@@ -42,7 +42,7 @@ std::string NormalizePath(std::string_view current_working_dir, std::string_view
             --flag;
             continue;
         }
-        ans = "/" + static_cast<std::string>(path_vec[i]) + ans;
+        ans = "/" + static_cast<std::string>(*it) + ans;
     }
     if (ans[0] != '/') {
         ans = "/";
