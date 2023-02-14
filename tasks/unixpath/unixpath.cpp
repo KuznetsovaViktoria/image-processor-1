@@ -30,7 +30,7 @@ std::string NormalizePath(std::string_view current_working_dir, std::string_view
     }
     std::string ans;
     size_t flag = 0;
-    for (std::vector<std::string_view>::reverse_iterator it = path_vec.rbegin(); it != path_vec.rend(); ++it ) {
+    for (std::vector<std::string_view>::reverse_iterator it = path_vec.rbegin(); it != path_vec.rend(); ++it) {
         if (*it == ".") {
             continue;
         }
