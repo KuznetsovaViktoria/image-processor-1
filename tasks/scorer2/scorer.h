@@ -19,4 +19,8 @@ public:
     void Reset();
 
     ScoreTable GetScoreTable() const;
+
+private:
+    ScoreTable table_check_;
+    ScoreTable table_merge_;
 };
