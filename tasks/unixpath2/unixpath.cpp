@@ -47,29 +47,29 @@ std::string NormalizeAbsolutePath(Path path_vec) {
 }
 
 UnixPath::UnixPath(std::string_view initial_dir) {
-    dir_initial = SplitBySlash(initial_dir);
-    dir_initial = SplitBySlash(NormalizeAbsolutePath(dir_initial));
-    dir_now = {"."};
-    is_dir_now_absolute = false;
+    dir_initial_ = SplitBySlash(initial_dir);
+    dir_initial_ = SplitBySlash(NormalizeAbsolutePath(dir_initial_));
+    dir_now_ = {"."};
+    is_dir_now_absolute_ = false;
 }
 
 void UnixPath::ChangeDirectory(std::string_view path) {
     if (path[0] == '/') {
-        dir_now = SplitBySlash(path);
-        is_dir_now_absolute = true;
+        dir_now_ = SplitBySlash(path);
+        is_dir_now_absolute_ = true;
         return;
     }
     Path path_vec = SplitBySlash(path);
-    dir_now.insert(dir_now.end(), path_vec.begin(), path_vec.end());
+    dir_now_.insert(dir_now_.end(), path_vec.begin(), path_vec.end());
 }
 
 std::string UnixPath::GetAbsolutePath() const {
     Path path;
-    if (!is_dir_now_absolute) {
-        path = dir_initial;
-        path.insert(path.end(), dir_now.begin(), dir_now.end());
+    if (!is_dir_now_absolute_) {
+        path = dir_initial_;
+        path.insert(path.end(), dir_now_.begin(), dir_now_.end());
     } else {
-        path = dir_now;
+        path = dir_now_;
     }
     return NormalizeAbsolutePath(path);
 }
@@ -77,19 +77,19 @@ std::string UnixPath::GetAbsolutePath() const {
 std::string UnixPath::GetRelativePath() const {
     std::string ans;
     Path combined;
-    if (!is_dir_now_absolute) {
-        Path path = dir_initial;
-        path.insert(path.end(), dir_now.begin(), dir_now.end());
+    if (!is_dir_now_absolute_) {
+        Path path = dir_initial_;
+        path.insert(path.end(), dir_now_.begin(), dir_now_.end());
         combined = SplitBySlash(NormalizeAbsolutePath(path));
     } else {
-        combined = SplitBySlash(NormalizeAbsolutePath(dir_now));
+        combined = SplitBySlash(NormalizeAbsolutePath(dir_now_));
     }
 
     size_t i = 0;
-    while (i < dir_initial.size() && dir_initial[i] == combined[i]) {
+    while (i < dir_initial_.size() && dir_initial_[i] == combined[i]) {
         ++i;
     }
-    if (i == dir_initial.size()) {
+    if (i == dir_initial_.size()) {
         Path sub_dir_now(combined.begin() + static_cast<int64_t>(i), combined.end());
         std::string normilized = NormalizeAbsolutePath(sub_dir_now);
         if (normilized == "/") {
@@ -97,10 +97,10 @@ std::string UnixPath::GetRelativePath() const {
         }
         return "." + normilized;
     }
-    for (size_t j = 1; j < dir_initial.size() - i; ++j) {
+    for (size_t j = 1; j < dir_initial_.size() - i; ++j) {
         ans += "../";
     }
-    std::string normilized = NormalizeAbsolutePath(dir_now);
+    std::string normilized = NormalizeAbsolutePath(dir_now_);
     if (normilized == "/") {
         return ans + "..";
     }

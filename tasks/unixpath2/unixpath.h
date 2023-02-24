@@ -14,7 +14,7 @@ public:
     std::string GetRelativePath() const;
 
 private:
-    std::vector<std::string> dir_now;
-    std::vector<std::string> dir_initial;
-    bool is_dir_now_absolute;
+    std::vector<std::string> dir_now_;
+    std::vector<std::string> dir_initial_;
+    bool is_dir_now_absolute_;
 };
