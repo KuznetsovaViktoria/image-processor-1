@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <ctime>
 
 class Minesweeper {
 public:
@@ -32,4 +33,19 @@ public:
     time_t GetGameTime() const;
 
     RenderedField RenderField() const;
+
+private:
+    std::vector<std::vector<int>> field_;
+    std::vector<std::vector<int>> player_field_;
+    std::vector<std::vector<int>> flag_field_;
+    size_t width_;
+    size_t height_;
+    size_t open_count_;
+    size_t mines_count_;
+    GameStatus status_;
+    std::time_t start_;
+    std::time_t finish_;
+    void MakeSystemFields(const size_t width, const size_t height);
+    std::vector<Cell> CheckWhichCellsToOpen(size_t y, size_t x);
+    void CountMinesNearbyWholeField();
 };
