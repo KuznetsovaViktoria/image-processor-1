@@ -5,7 +5,7 @@
 
 Poly::Poly(std::initializer_list<int64_t> coefs) {
     int64_t i = 0;
-    for (int64_t x: coefs) {
+    for (int64_t x : coefs) {
         if (x != 0) {
             coefs_[i] = x;
         }
@@ -14,7 +14,7 @@ Poly::Poly(std::initializer_list<int64_t> coefs) {
 }
 
 Poly::Poly(std::initializer_list<std::pair<int64_t, int64_t>> coefs) {
-    for (std::pair<int64_t, int64_t> x: coefs) {
+    for (std::pair<int64_t, int64_t> x : coefs) {
         if (x.second != 0) {
             coefs_[x.first] = x.second;
         }
@@ -23,7 +23,7 @@ Poly::Poly(std::initializer_list<std::pair<int64_t, int64_t>> coefs) {
 
 int64_t Poly::operator()(int64_t k) const {
     int64_t ans = 0;
-    for (std::pair<int64_t, int64_t> a: coefs_) {
+    for (std::pair<int64_t, int64_t> a : coefs_) {
         ans += a.second * static_cast<int64_t>(pow(static_cast<double>(k), static_cast<double>(a.first)));
     }
     return ans;
@@ -39,10 +39,10 @@ bool Poly::operator!=(const Poly &other) const {
 
 Poly operator+(const Poly &left, const Poly &right) {
     Poly ans;
-    for (std::pair<int64_t, int64_t> a: left.coefs_) {
+    for (std::pair<int64_t, int64_t> a : left.coefs_) {
         ans.coefs_[a.first] = a.second;
     }
-    for (std::pair<int64_t, int64_t> a: right.coefs_) {
+    for (std::pair<int64_t, int64_t> a : right.coefs_) {
         if (ans.coefs_[a.first] + a.second != 0) {
             ans.coefs_[a.first] += a.second;
         } else {
@@ -54,7 +54,7 @@ Poly operator+(const Poly &left, const Poly &right) {
 
 Poly Poly::operator-() const {
     Poly ans;
-    for (std::pair<int64_t, int64_t> a: coefs_) {
+    for (std::pair<int64_t, int64_t> a : coefs_) {
         ans.coefs_[a.first] = -a.second;
     }
     return ans;
@@ -65,7 +65,7 @@ Poly operator-(const Poly &left, const Poly &right) {
 }
 
 void Poly::operator+=(const Poly &other) {
-    for (std::pair<int64_t, int64_t> a: other.coefs_) {
+    for (std::pair<int64_t, int64_t> a : other.coefs_) {
         if (coefs_[a.first] + a.second != 0) {
             coefs_[a.first] += a.second;
         } else {
@@ -75,7 +75,7 @@ void Poly::operator+=(const Poly &other) {
 }
 
 void Poly::operator-=(const Poly &other) {
-    for (std::pair<int64_t, int64_t> a: other.coefs_) {
+    for (std::pair<int64_t, int64_t> a : other.coefs_) {
         if (coefs_[a.first] - a.second != 0) {
             coefs_[a.first] -= a.second;
         } else {
@@ -115,8 +115,8 @@ std::ostream &operator<<(std::ostream &os, const Poly &poly) {
 
 Poly operator*(const Poly &left, const Poly &right) {
     Poly ans;
-    for (std::pair<int64_t, int64_t> a: left.coefs_) {
-        for (std::pair<int64_t, int64_t> b: right.coefs_) {
+    for (std::pair<int64_t, int64_t> a : left.coefs_) {
+        for (std::pair<int64_t, int64_t> b : right.coefs_) {
             ans.coefs_[a.first + b.first] += a.second * b.second;
             if (ans.coefs_[a.first + b.first] == 0) {
                 ans.coefs_.erase(a.first + b.first);
@@ -128,8 +128,8 @@ Poly operator*(const Poly &left, const Poly &right) {
 
 void Poly::operator*=(const Poly &other) {
     std::map<int64_t, int64_t> ans;
-    for (std::pair<int64_t, int64_t> a: other.coefs_) {
-        for (std::pair<int64_t, int64_t> b: coefs_) {
+    for (std::pair<int64_t, int64_t> a : other.coefs_) {
+        for (std::pair<int64_t, int64_t> b : coefs_) {
             ans[a.first + b.first] += a.second * b.second;
             if (ans[a.first + b.first] == 0) {
                 ans.erase(a.first + b.first);
