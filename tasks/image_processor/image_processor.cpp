@@ -12,6 +12,10 @@ int main(int argc, char *argv[]) {
             const char* ch = argv[i];
             bmp.Read(ch);
         }
+        if (i==2){
+            const char* ch = argv[i];
+            bmp.Export(ch);
+        }
     }
     return 0;
 }
