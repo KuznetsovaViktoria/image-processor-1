@@ -1,9 +1,15 @@
 #include "bmp.h"
+#pragma once
+#include <iostream>
+#include <fstream>
 
-#include<iostream>
-#include<fstream>
+Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b){}
 
-Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b) {};
+//void Color::operator*(const size_t x) {
+//    r*=x;
+//    g*=x;
+//    b*=x
+//};
 
 void Bmp::Read(const char *path) {
     std::ifstream f;
@@ -29,10 +35,10 @@ void Bmp::Read(const char *path) {
 
     width_ = information_header[4] + (information_header[5] << 8) + (information_header[6] << 16) +
              (information_header[7] << 24);
-//    std::cout<<"width: " <<width_<<'\n';
+    //    std::cout<<"width: " <<width_<<'\n';
     height_ = information_header[8] + (information_header[9] << 8) + (information_header[10] << 16) +
               (information_header[11] << 24);
-//    std::cout<<"height: " <<height_<<'\n';
+    //    std::cout<<"height: " <<height_<<'\n';
     colors_.resize(width_ * height_);
 
     padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
@@ -49,13 +55,11 @@ void Bmp::Read(const char *path) {
         f.ignore(padding_amount_);
     }
     f.close();
-
-
 };
 
 void Bmp::Export(const char *path) {
     std::ofstream f(path, std::ios::binary);
-    //f.open(path, std::ios::in | std::ios::binary);
+    // f.open(path, std::ios::in | std::ios::binary);
     if (!f.is_open()) {
         std::cout << "This file couldn't be opened\n";
         return;
@@ -83,8 +87,8 @@ void Bmp::Export(const char *path) {
     dib_header[12] = 1;
     dib_header[14] = 24;
 
-    f.write(reinterpret_cast<char*>(bmp_header), bmp_header_size_);
-    f.write(reinterpret_cast<char*>(dib_header), dib_header_size_);
+    f.write(reinterpret_cast<char *>(bmp_header), bmp_header_size_);
+    f.write(reinterpret_cast<char *>(dib_header), dib_header_size_);
 
     for (int y = 0; y < height_; ++y) {
         for (int x = 0; x < width_; ++x) {
@@ -120,4 +124,20 @@ void Bmp::Crop(int new_width, int new_height) {
     height_ = new_height;
     colors_ = new_colors;
     file_size_ = bmp_header_size_ + dib_header_size_ + width_ * height_ * 3 + padding_amount_ * height_;
+}
+
+int Bmp::GetHeight() const {
+    return height_;
+}
+
+int Bmp::GetWidth() const {
+    return width_;
+}
+
+Color &Bmp::operator[](size_t i) {
+    return colors_[i];
+};
+
+void Bmp::ChangePrivateVectorOfColors(std::vector<Color> new_colors) {
+    colors_ = new_colors;
 }
