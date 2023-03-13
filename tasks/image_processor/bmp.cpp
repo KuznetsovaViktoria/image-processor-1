@@ -1,6 +1,7 @@
 #include "bmp.h"
 #include <iostream>
 #include <fstream>
+#include <array>
 
 Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b) {
 }
@@ -29,10 +30,8 @@ void Bmp::Read(const char *path) {
 
     width_ = information_header[4] + (information_header[5] << 8) + (information_header[6] << 16) +
              (information_header[7] << 24);
-    //    std::cout<<"width: " <<width_<<'\n';
     height_ = information_header[8] + (information_header[9] << 8) + (information_header[10] << 16) +
               (information_header[11] << 24);
-    //    std::cout<<"height: " <<height_<<'\n';
     colors_.resize(width_ * height_);
 
     padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
@@ -42,17 +41,20 @@ void Bmp::Read(const char *path) {
             unsigned char color[3];
             f.read(reinterpret_cast<char *>(color), 3);
 
-            colors_[y * width_ + x].r = static_cast<long double>(color[2]) / rgb_;
-            colors_[y * width_ + x].g = static_cast<long double>(color[1]) / rgb_;
-            colors_[y * width_ + x].b = static_cast<long double>(color[0]) / rgb_;
+            colors_[y * width_ + x].r = static_cast<long double>(color[2]) / 255;
+            colors_[y * width_ + x].g = static_cast<long double>(color[1]) / 255;
+            colors_[y * width_ + x].b = static_cast<long double>(color[0]) / 255;
         }
         f.ignore(padding_amount_);
     }
     f.close();
 };
 
-//видимо надо чтобы все виртуальные методы были определены у всех дочерних классов, поэтому придется поменять архитектуру,
-//не ебись с этим долго прошу тебя
+void WriteNBytes(unsigned char arr[], size_t start, size_t n, size_t value) {
+    for (size_t i = 0; i < n; i++) {
+        arr[i + start] = value >> (i * 8);
+    }
+}
 
 void Bmp::Export(const char *path) const {
     std::ofstream f(static_cast<std::string>(path), std::ios::binary);
@@ -64,58 +66,60 @@ void Bmp::Export(const char *path) const {
     unsigned char bmp_header[14] = {0};
     bmp_header[0] = 'B';
     bmp_header[1] = 'M';
-    bmp_header[2] = file_size_;
-    bmp_header[3] = file_size_ >> 8;
-    bmp_header[4] = file_size_ >> 16;
-    bmp_header[5] = file_size_ >> 24;
+    WriteNBytes(bmp_header, 2, 4, file_size_);
+    //    bmp_header[2] = file_size_;
+    //    bmp_header[3] = file_size_ >> 8;
+    //    bmp_header[4] = file_size_ >> 16;
+    //    bmp_header[5] = file_size_ >> 24;
     bmp_header[10] = bmp_header_size_ + dib_header_size_;
 
     unsigned char dib_header[40] = {0};
     dib_header[0] = dib_header_size_;
-    dib_header[4] = width_;
-    dib_header[5] = width_ >> 8;
-    dib_header[6] = width_ >> 16;
-    dib_header[7] = width_ >> 24;
-    dib_header[8] = height_;
-    dib_header[9] = height_ >> 8;
-    dib_header[10] = height_ >> 16;
-    dib_header[11] = height_ >> 24;
+    WriteNBytes(dib_header, 4, 4, width_);
+    //    dib_header[4] = width_;
+    //    dib_header[5] = width_ >> 8;
+    //    dib_header[6] = width_ >> 16;
+    //    dib_header[7] = width_ >> 24;
+    WriteNBytes(dib_header, 8, 4, height_);
+    //    dib_header[8] = height_;
+    //    dib_header[9] = height_ >> 8;
+    //    dib_header[10] = height_ >> 16;
+    //    dib_header[11] = height_ >> 24;
     dib_header[12] = 1;
     dib_header[14] = 24;
 
     f.write(reinterpret_cast<char *>(bmp_header), bmp_header_size_);
     f.write(reinterpret_cast<char *>(dib_header), dib_header_size_);
 
-    for (int y = 0; y < height_; ++y) {
-        for (int x = 0; x < width_; ++x) {
+    for (size_t y = 0; y < height_; ++y) {
+        for (size_t x = 0; x < width_; ++x) {
             unsigned char color[3];
-            color[2] = static_cast<unsigned char>(GetColor(x, y).r * rgb_);
-            color[1] = static_cast<unsigned char>(GetColor(x, y).g * rgb_);
-            color[0] = static_cast<unsigned char>(GetColor(x, y).b * rgb_);
+            color[2] = static_cast<unsigned char>(GetColor(x, y).r * 255);
+            color[1] = static_cast<unsigned char>(GetColor(x, y).g * 255);
+            color[0] = static_cast<unsigned char>(GetColor(x, y).b * 255);
 
             f.write(reinterpret_cast<char *>(color), 3);
         }
         f.write(reinterpret_cast<char *>(bmp_pad), padding_amount_);
     }
     f.close();
-//    std::cout << "file created!\n";
 }
 
-Color Bmp::GetColor(int x, int y) const {
+Color Bmp::GetColor(size_t x, size_t y) const {
     return colors_[y * width_ + x];
 }
 
-int Bmp::GetHeight() const {
+size_t Bmp::GetHeight() const {
     return height_;
 }
 
-int Bmp::GetWidth() const {
+size_t Bmp::GetWidth() const {
     return width_;
 }
-int Bmp::GetBmpHeaderSize() const {
+size_t Bmp::GetBmpHeaderSize() const {
     return bmp_header_size_;
 }
-int Bmp::GetDibHeaderSize() const {
+size_t Bmp::GetDibHeaderSize() const {
     return dib_header_size_;
 }
 
@@ -127,18 +131,18 @@ void Bmp::ChangePrivateVectorOfColors(std::vector<Color> new_colors) {
     colors_ = new_colors;
 }
 
-void Bmp::SetFileSize(int new_size) {
+void Bmp::SetFileSize(size_t new_size) {
     file_size_ = new_size;
 }
 
-void Bmp::SetHeight(int new_height) {
+void Bmp::SetHeight(size_t new_height) {
     height_ = new_height;
 }
 
-void Bmp::SetWidth(int new_width) {
+void Bmp::SetWidth(size_t new_width) {
     width_ = new_width;
 }
 
-void Bmp::SetPaddingAmount(int new_padding) {
+void Bmp::SetPaddingAmount(size_t new_padding) {
     padding_amount_ = new_padding;
 }

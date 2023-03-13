@@ -6,7 +6,7 @@ class Sharpening : public MatrixFilter {
 
 public:
     ~Sharpening() override = default;
-    int GetCoef(int i) override;
+    int8_t GetCoef(size_t i) override;
 private:
-    std::vector<int> matrix_ = {0, -1, 0, -1, 5, -1, 0, -1, 0};
+    std::vector<int8_t> matrix_ = {0, -1, 0, -1, 5, -1, 0, -1, 0};
 };

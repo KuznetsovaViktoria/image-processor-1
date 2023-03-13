@@ -1,5 +1,5 @@
 #include "sharpening.h"
 
-int Sharpening::GetCoef(int i) {
+int8_t Sharpening::GetCoef(size_t i) {
     return matrix_[i];
 };

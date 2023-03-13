@@ -5,7 +5,7 @@ add_executable(
         grayscale.cpp
         negative.cpp
         matrixFilter.cpp
-        filter.cpp
+        filter.h
         sharpening.cpp
         edgeDetection.cpp
         gaussianBlur.cpp

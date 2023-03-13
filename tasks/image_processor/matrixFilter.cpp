@@ -2,14 +2,14 @@
 
 void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
     std::vector<Color> new_colors(image.GetWidth() * image.GetHeight());
-    for (int y = 0; y < image.GetHeight(); ++y) {
-        for (int x = 0; x < image.GetWidth(); ++x) {
+    for (size_t y = 0; y < image.GetHeight(); ++y) {
+        for (size_t x = 0; x < image.GetWidth(); ++x) {
             long double r = 0;
             long double g = 0;
             long double b = 0;
-            std::vector<std::pair<int, int>> d = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0},
+            std::vector<std::pair<int8_t, int8_t>> d = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0},
                                                   {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
-            for (int i = 0; i < 9; ++i) {
+            for (size_t i = 0; i < 9; ++i) {
                 if (0 <= x + d[i].first && x + d[i].first < image.GetWidth() && 0 <= y + d[i].second &&
                     y + d[i].second < image.GetHeight()) {
                     r += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).r;
@@ -42,6 +42,6 @@ void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
     image.ChangePrivateVectorOfColors(new_colors);
 }
 
-int MatrixFilter::GetCoef(int i) {
+int8_t MatrixFilter::GetCoef(size_t i) {
     return 0;
 };
