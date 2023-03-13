@@ -1,9 +1,8 @@
 #include "matrixFilter.h"
 #pragma once
-#include <iostream>
 
 
-void MatrixFilter::ApplyFilter(Bmp& image) {
+void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
     std::vector<Color> new_colors(image.GetWidth() * image.GetHeight());
     for (int y = 0; y < image.GetHeight(); ++y) {
         for (int x = 0; x < image.GetWidth(); ++x) {

@@ -5,7 +5,7 @@
 class MatrixFilter : public Filter {
 
 public:
-    void ApplyFilter(Bmp& image) override;
+    void ApplyFilter(Bmp& image, std::vector<double> args) override;
     ~MatrixFilter() override = default;
     virtual int GetCoef(int i);
 private:
