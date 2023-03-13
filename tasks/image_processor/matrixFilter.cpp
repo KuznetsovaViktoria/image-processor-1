@@ -1,6 +1,4 @@
 #include "matrixFilter.h"
-#pragma once
-
 
 void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
     std::vector<Color> new_colors(image.GetWidth() * image.GetHeight());
@@ -17,7 +15,7 @@ void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
                     r += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).r;
                     g += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).g;
                     b += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).b;
-                } else {  // questionable way, don't know for sure if it's correct
+                } else {
                     r += GetCoef(i) * image.GetColor(x, y).r;
                     g += GetCoef(i) * image.GetColor(x, y).g;
                     b += GetCoef(i) * image.GetColor(x, y).b;

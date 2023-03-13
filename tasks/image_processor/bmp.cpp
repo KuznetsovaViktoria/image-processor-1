@@ -1,5 +1,4 @@
 #include "bmp.h"
-#pragma once
 #include <iostream>
 #include <fstream>
 
@@ -137,6 +136,6 @@ void Bmp::SetWidth(int new_width) {
     width_ = new_width;
 }
 
-void Bmp::SetPaddingAmount(int new_padding){
+void Bmp::SetPaddingAmount(int new_padding) {
     padding_amount_ = new_padding;
 }

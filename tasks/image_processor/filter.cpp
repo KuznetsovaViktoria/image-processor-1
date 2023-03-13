@@ -1,5 +1,4 @@
 #include "filter.h"
-#pragma once
 
 void Filter::ApplyFilter(Bmp& image, std::vector<double> args) {
     for (int y = 0; y < image.GetHeight(); ++y) {

@@ -1,4 +1,3 @@
-#pragma once
 #include "crop.h"
 
 void Crop::ApplyFilter(Bmp &image, std::vector<double> args) {
@@ -14,7 +13,7 @@ void Crop::ApplyFilter(Bmp &image, std::vector<double> args) {
 
     for (int y = 0; y < new_height; ++y) {
         for (int x = 0; x < new_width; ++x) {
-            new_colors[(new_height - 1 - y) * new_width + x] = image.GetColor(x, (image.GetHeight()-1-y));
+            new_colors[(new_height - 1 - y) * new_width + x] = image.GetColor(x, (image.GetHeight() - 1 - y));
         }
     }
     image.SetWidth(new_width);
