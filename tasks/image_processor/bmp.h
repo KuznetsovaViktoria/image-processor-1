@@ -9,22 +9,23 @@ struct Color {
 
     Color() = default;
     Color(long double r, long double g, long double b);
-
-//    void operator*=(const size_t x);
-//    void operator+=(const Color& x);
-//    void operator-=(const Color& x);
 };
 
 class Bmp {
 public:
     void Read(const char* path);
-    void Export(const char* path);
-    void Crop(int new_width, int new_height);
+    void Export(const char* path) const;
     Color GetColor(int x, int y) const;
     int GetHeight() const;
     int GetWidth() const;
+    int GetBmpHeaderSize() const;
+    int GetDibHeaderSize() const;
     Color& operator[](size_t);
     void ChangePrivateVectorOfColors(std::vector<Color> new_colors);
+    void SetHeight(int new_height);
+    void SetWidth(int new_width);
+    void SetFileSize(int new_size);
+    void SetPaddingAmount(int new_padding);
 
 private:
     int width_;

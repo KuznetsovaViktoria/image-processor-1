@@ -13,4 +13,4 @@ add_executable(
         sharpening.h
         edgeDetection.h
         sharpening.cpp
-        edgeDetection.cpp)
+        edgeDetection.cpp gaussianBlur.h gaussianBlur.cpp crop.h crop.cpp)

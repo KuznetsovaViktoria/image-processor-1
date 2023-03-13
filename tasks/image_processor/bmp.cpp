@@ -3,13 +3,8 @@
 #include <iostream>
 #include <fstream>
 
-Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b){}
-
-//void Color::operator*(const size_t x) {
-//    r*=x;
-//    g*=x;
-//    b*=x
-//};
+Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b) {
+}
 
 void Bmp::Read(const char *path) {
     std::ifstream f;
@@ -48,18 +43,17 @@ void Bmp::Read(const char *path) {
             unsigned char color[3];
             f.read(reinterpret_cast<char *>(color), 3);
 
-            colors_[y * width_ + x].r = static_cast<long double>(color[0]) / rgb_;
+            colors_[y * width_ + x].r = static_cast<long double>(color[2]) / rgb_;
             colors_[y * width_ + x].g = static_cast<long double>(color[1]) / rgb_;
-            colors_[y * width_ + x].b = static_cast<long double>(color[2]) / rgb_;
+            colors_[y * width_ + x].b = static_cast<long double>(color[0]) / rgb_;
         }
         f.ignore(padding_amount_);
     }
     f.close();
 };
 
-void Bmp::Export(const char *path) {
-    std::ofstream f(path, std::ios::binary);
-    // f.open(path, std::ios::in | std::ios::binary);
+void Bmp::Export(const char *path) const {
+    std::ofstream f(static_cast<std::string>(path), std::ios::binary);
     if (!f.is_open()) {
         std::cout << "This file couldn't be opened\n";
         return;
@@ -93,9 +87,9 @@ void Bmp::Export(const char *path) {
     for (int y = 0; y < height_; ++y) {
         for (int x = 0; x < width_; ++x) {
             unsigned char color[3];
-            color[0] = static_cast<unsigned char>(GetColor(x, y).r * rgb_);
+            color[2] = static_cast<unsigned char>(GetColor(x, y).r * rgb_);
             color[1] = static_cast<unsigned char>(GetColor(x, y).g * rgb_);
-            color[2] = static_cast<unsigned char>(GetColor(x, y).b * rgb_);
+            color[0] = static_cast<unsigned char>(GetColor(x, y).b * rgb_);
 
             f.write(reinterpret_cast<char *>(color), 3);
         }
@@ -109,29 +103,18 @@ Color Bmp::GetColor(int x, int y) const {
     return colors_[y * width_ + x];
 }
 
-void Bmp::Crop(int new_width, int new_height) {
-    std::vector<Color> new_colors;
-    new_colors.resize(new_width * new_height);
-
-    padding_amount_ = ((4 - (new_width * 3) % 4) % 4);
-
-    for (int y = 0; y < new_height; ++y) {
-        for (int x = 0; x < new_width; ++x) {
-            new_colors[y * new_width + x] = GetColor(x, y);
-        }
-    }
-    width_ = new_width;
-    height_ = new_height;
-    colors_ = new_colors;
-    file_size_ = bmp_header_size_ + dib_header_size_ + width_ * height_ * 3 + padding_amount_ * height_;
-}
-
 int Bmp::GetHeight() const {
     return height_;
 }
 
 int Bmp::GetWidth() const {
     return width_;
+}
+int Bmp::GetBmpHeaderSize() const {
+    return bmp_header_size_;
+}
+int Bmp::GetDibHeaderSize() const {
+    return dib_header_size_;
 }
 
 Color &Bmp::operator[](size_t i) {
@@ -140,4 +123,20 @@ Color &Bmp::operator[](size_t i) {
 
 void Bmp::ChangePrivateVectorOfColors(std::vector<Color> new_colors) {
     colors_ = new_colors;
+}
+
+void Bmp::SetFileSize(int new_size) {
+    file_size_ = new_size;
+}
+
+void Bmp::SetHeight(int new_height) {
+    height_ = new_height;
+}
+
+void Bmp::SetWidth(int new_width) {
+    width_ = new_width;
+}
+
+void Bmp::SetPaddingAmount(int new_padding){
+    padding_amount_ = new_padding;
 }
