@@ -1,16 +1,15 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
-
 #include "filter.h"
-#include "matrixFilter.cpp"
-#include "bmp.cpp"
-#include "grayscale.cpp"
-#include "negative.cpp"
-#include "crop.cpp"
-#include "sharpening.cpp"
-#include "edgeDetection.cpp"
-#include "gaussianBlur.cpp"
+#include "bmp.h"
+#include "grayscale.h"
+#include "negative.h"
+#include "crop.h"
+#include "sharpening.h"
+#include "edgeDetection.h"
+#include "gaussianBlur.h"
+
 
 int main(int argc, char* argv[]) {
     Bmp bmp;
