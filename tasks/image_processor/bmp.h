@@ -15,25 +15,24 @@ class Bmp {
 public:
     void Read(const char* path);
     void Export(const char* path) const;
-    Color GetColor(int x, int y) const;
-    int GetHeight() const;
-    int GetWidth() const;
-    int GetBmpHeaderSize() const;
-    int GetDibHeaderSize() const;
+    Color GetColor(size_t x, size_t y) const;
+    size_t GetHeight() const;
+    size_t GetWidth() const;
+    size_t GetBmpHeaderSize() const;
+    size_t GetDibHeaderSize() const;
     Color& operator[](size_t);
     void ChangePrivateVectorOfColors(std::vector<Color> new_colors);
-    void SetHeight(int new_height);
-    void SetWidth(int new_width);
-    void SetFileSize(int new_size);
-    void SetPaddingAmount(int new_padding);
+    void SetHeight(size_t new_height);
+    void SetWidth(size_t new_width);
+    void SetFileSize(size_t new_size);
+    void SetPaddingAmount(size_t new_padding);
 
 private:
-    int width_;
-    int height_;
-    int file_size_;
-    int padding_amount_;
+    size_t width_;
+    size_t height_;
+    size_t file_size_;
+    size_t padding_amount_;
     std::vector<Color> colors_;
-    const int bmp_header_size_ = 14;
-    const int dib_header_size_ = 40;
-    const long double rgb_ = 255.0;
+    const size_t bmp_header_size_ = 14;
+    const size_t dib_header_size_ = 40;
 };
