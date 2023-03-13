@@ -8,7 +8,7 @@ void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
             long double g = 0;
             long double b = 0;
             std::vector<std::pair<int8_t, int8_t>> d = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0},
-                                                  {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
+                                                        {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
             for (size_t i = 0; i < 9; ++i) {
                 if (0 <= x + d[i].first && x + d[i].first < image.GetWidth() && 0 <= y + d[i].second &&
                     y + d[i].second < image.GetHeight()) {

@@ -10,7 +10,6 @@
 #include "edgeDetection.h"
 #include "gaussianBlur.h"
 
-
 int main(int argc, char* argv[]) {
     Bmp bmp;
     const char* read_file = nullptr;
