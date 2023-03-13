@@ -1,6 +1,6 @@
 #include "edgeDetection.h"
 #include "grayscale.h"
-#pragma once
+
 int8_t EdgeDetection::GetCoef(size_t i) {
     return matrix_[i];
 };
