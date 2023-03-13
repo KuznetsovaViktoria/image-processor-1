@@ -51,6 +51,9 @@ void Bmp::Read(const char *path) {
     f.close();
 };
 
+//видимо надо чтобы все виртуальные методы были определены у всех дочерних классов, поэтому придется поменять архитектуру,
+//не ебись с этим долго прошу тебя
+
 void Bmp::Export(const char *path) const {
     std::ofstream f(static_cast<std::string>(path), std::ios::binary);
     if (!f.is_open()) {
@@ -95,7 +98,7 @@ void Bmp::Export(const char *path) const {
         f.write(reinterpret_cast<char *>(bmp_pad), padding_amount_);
     }
     f.close();
-    std::cout << "file created!\n";
+//    std::cout << "file created!\n";
 }
 
 Color Bmp::GetColor(int x, int y) const {
