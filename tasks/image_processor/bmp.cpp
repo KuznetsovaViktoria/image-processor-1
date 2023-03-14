@@ -8,9 +8,10 @@ Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b) {
 const int EIGHT = 8;
 const double RGB = 255;
 
-void ReadNBytes(unsigned char arr[], size_t start, size_t n, size_t &value) {
-    for (size_t i = 0; i < n; i++) {
-        value += arr[i + start] >> (i * EIGHT);
+void ReadNBytes(unsigned char *arr, size_t start, size_t n, size_t &value) {
+    value = arr[start];
+    for (size_t i = 1; i < n; i++) {
+        value += arr[i + start] << (i * EIGHT);
     }
 }
 
@@ -34,13 +35,9 @@ void Bmp::Read(const char *path) {
     unsigned char information_header[dib_header_size_];
     f.read(reinterpret_cast<char *>(information_header), static_cast<int64_t>(dib_header_size_));
     ReadNBytes(file_header, 2, 4, file_size_);
-    //    file_size_ = file_header[2] + (file_header[3] << 8) + (file_header[4] << 16) + (file_header[5] << 24);
     ReadNBytes(information_header, 4, 4, width_);
     ReadNBytes(information_header, EIGHT, 4, height_);
-    //    width_ = information_header[4] + (information_header[5] << 8) + (information_header[6] << 16) +
-    //             (information_header[7] << 24);
-    //    height_ = information_header[8] + (information_header[9] << 8) + (information_header[10] << 16) +
-    //              (information_header[11] << 24);
+
     colors_.resize(width_ * height_);
 
     padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
