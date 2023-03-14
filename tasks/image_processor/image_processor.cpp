@@ -54,12 +54,12 @@ int main(int argc, char* argv[]) {
 
             filters[i]->ApplyFilter(bmp, args[i]);
         }
-        for (int64_t i = static_cast<int>(filters.size()) - 1; i >= 0; --i) {
-            delete filters[i];
-        }
         bmp.Export(export_file);
     } catch (...) {
         std::cout << "some problem\n";
+    }
+    for (int64_t i = static_cast<int>(filters.size()) - 1; i >= 0; --i) {
+        delete filters[i];
     }
     return 0;
 }
