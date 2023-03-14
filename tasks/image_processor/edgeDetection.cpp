@@ -3,7 +3,7 @@
 
 int8_t EdgeDetection::GetCoef(size_t i) {
     return matrix_[i];
-};
+}
 
 void EdgeDetection::CorrectColors(Bmp& image) const {
     for (size_t y = 0; y < image.GetHeight(); ++y) {

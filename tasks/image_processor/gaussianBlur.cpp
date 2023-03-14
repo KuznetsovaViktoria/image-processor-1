@@ -2,7 +2,7 @@
 #include <cmath>
 
 long double Blur::CountCoefficient(int64_t x0, int64_t x) const {
-    return exp(-(x0 - x) * (x0 - x) / (2 * sigma_ * sigma_));
+    return exp(-static_cast<double>((x0 - x) * (x0 - x)) / (2 * sigma_ * sigma_));
 }
 
 void Blur::NormilizeColor(Color& i) {
@@ -28,7 +28,7 @@ void Blur::ApplyFilter(Bmp& image, std::vector<double> args) {
     int64_t s = ceil(3 * sigma_);
     std::vector<Color> new_colors(image.GetWidth() * image.GetHeight(), Color(0, 0, 0));
 
-    long double coef = 1 / pow(2 * M_PI * sigma_ * sigma_, 0.5);
+    long double coef = 1 / pow(2 * M_PI * sigma_ * sigma_, 1 / 2);
 
     for (int64_t y0 = 0; y0 < image.GetHeight(); ++y0) {
         for (int64_t x0 = 0; x0 < image.GetWidth(); ++x0) {

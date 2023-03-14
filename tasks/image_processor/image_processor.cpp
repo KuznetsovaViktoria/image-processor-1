@@ -60,6 +60,6 @@ int main(int argc, char* argv[]) {
         bmp.Export(export_file);
     } catch (...) {
         std::cout << "some problem\n";
-    };
+    }
     return 0;
 }

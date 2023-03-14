@@ -17,8 +17,8 @@ public:
     Color GetColor(size_t x, size_t y) const;
     size_t GetHeight() const;
     size_t GetWidth() const;
-    size_t GetBmpHeaderSize() const;
-    size_t GetDibHeaderSize() const;
+    const size_t GetBmpHeaderSize() const;
+    const size_t GetDibHeaderSize() const;
     Color& operator[](size_t);
     void ChangePrivateVectorOfColors(std::vector<Color> new_colors);
     void SetHeight(size_t new_height);

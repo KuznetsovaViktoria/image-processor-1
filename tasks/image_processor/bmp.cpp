@@ -1,9 +1,17 @@
 #include "bmp.h"
 #include <iostream>
 #include <fstream>
-#include <array>
 
 Color::Color(long double r, long double g, long double b) : r(r), g(g), b(b) {
+}
+
+const int EIGHT = 8;
+const double RGB = 255;
+
+void ReadNBytes(unsigned char arr[], size_t start, size_t n, size_t &value) {
+    for (size_t i = 0; i < n; i++) {
+        value += arr[i + start] >> (i * EIGHT);
+    }
 }
 
 void Bmp::Read(const char *path) {
@@ -15,7 +23,7 @@ void Bmp::Read(const char *path) {
     }
 
     unsigned char file_header[bmp_header_size_];
-    f.read(reinterpret_cast<char *>(file_header), bmp_header_size_);
+    f.read(reinterpret_cast<char *>(file_header), static_cast<int64_t>(bmp_header_size_));
 
     if (file_header[0] != 'B' || file_header[1] != 'M') {
         std::cout << "The file is not a .bmp file\n";
@@ -24,14 +32,15 @@ void Bmp::Read(const char *path) {
     }
 
     unsigned char information_header[dib_header_size_];
-    f.read(reinterpret_cast<char *>(information_header), dib_header_size_);
-
-    file_size_ = file_header[2] + (file_header[3] << 8) + (file_header[4] << 16) + (file_header[5] << 24);
-
-    width_ = information_header[4] + (information_header[5] << 8) + (information_header[6] << 16) +
-             (information_header[7] << 24);
-    height_ = information_header[8] + (information_header[9] << 8) + (information_header[10] << 16) +
-              (information_header[11] << 24);
+    f.read(reinterpret_cast<char *>(information_header), static_cast<int64_t>(dib_header_size_));
+    ReadNBytes(file_header, 2, 4, file_size_);
+    //    file_size_ = file_header[2] + (file_header[3] << 8) + (file_header[4] << 16) + (file_header[5] << 24);
+    ReadNBytes(information_header, 4, 4, width_);
+    ReadNBytes(information_header, EIGHT, 4, height_);
+    //    width_ = information_header[4] + (information_header[5] << 8) + (information_header[6] << 16) +
+    //             (information_header[7] << 24);
+    //    height_ = information_header[8] + (information_header[9] << 8) + (information_header[10] << 16) +
+    //              (information_header[11] << 24);
     colors_.resize(width_ * height_);
 
     padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
@@ -41,20 +50,27 @@ void Bmp::Read(const char *path) {
             unsigned char color[3];
             f.read(reinterpret_cast<char *>(color), 3);
 
-            colors_[y * width_ + x].r = static_cast<long double>(color[2]) / 255;
-            colors_[y * width_ + x].g = static_cast<long double>(color[1]) / 255;
-            colors_[y * width_ + x].b = static_cast<long double>(color[0]) / 255;
+            colors_[y * width_ + x].r = static_cast<long double>(color[2]) / RGB;
+            colors_[y * width_ + x].g = static_cast<long double>(color[1]) / RGB;
+            colors_[y * width_ + x].b = static_cast<long double>(color[0]) / RGB;
         }
-        f.ignore(padding_amount_);
+        f.ignore(static_cast<int64_t>(padding_amount_));
     }
     f.close();
-};
+}
 
 void WriteNBytes(unsigned char arr[], size_t start, size_t n, size_t value) {
     for (size_t i = 0; i < n; i++) {
-        arr[i + start] = value >> (i * 8);
+        arr[i + start] = value >> (i * EIGHT);
     }
 }
+
+const size_t BMP_HEADER_SIZE = 14;
+const size_t DIB_HEADER_SIZE = 40;
+const size_t INDEX_HEADER_SIZE = 10;
+const size_t INDEX_NUMBER_OF_COLOR_PLANES = 12;
+const size_t INDEX_NUMBER_OF_BITS_PER_PIXEL = 14;
+const size_t NUMBER_OF_BITS_PER_PIXEL = 24;
 
 void Bmp::Export(const char *path) const {
     std::ofstream f(static_cast<std::string>(path), std::ios::binary);
@@ -63,44 +79,32 @@ void Bmp::Export(const char *path) const {
         return;
     }
     unsigned char bmp_pad[3] = {0, 0, 0};
-    unsigned char bmp_header[14] = {0};
+    unsigned char bmp_header[BMP_HEADER_SIZE] = {0};
     bmp_header[0] = 'B';
     bmp_header[1] = 'M';
     WriteNBytes(bmp_header, 2, 4, file_size_);
-    //    bmp_header[2] = file_size_;
-    //    bmp_header[3] = file_size_ >> 8;
-    //    bmp_header[4] = file_size_ >> 16;
-    //    bmp_header[5] = file_size_ >> 24;
-    bmp_header[10] = bmp_header_size_ + dib_header_size_;
+    bmp_header[INDEX_HEADER_SIZE] = bmp_header_size_ + dib_header_size_;
 
-    unsigned char dib_header[40] = {0};
+    unsigned char dib_header[DIB_HEADER_SIZE] = {0};
     dib_header[0] = dib_header_size_;
     WriteNBytes(dib_header, 4, 4, width_);
-    //    dib_header[4] = width_;
-    //    dib_header[5] = width_ >> 8;
-    //    dib_header[6] = width_ >> 16;
-    //    dib_header[7] = width_ >> 24;
-    WriteNBytes(dib_header, 8, 4, height_);
-    //    dib_header[8] = height_;
-    //    dib_header[9] = height_ >> 8;
-    //    dib_header[10] = height_ >> 16;
-    //    dib_header[11] = height_ >> 24;
-    dib_header[12] = 1;
-    dib_header[14] = 24;
+    WriteNBytes(dib_header, EIGHT, 4, height_);
+    dib_header[INDEX_NUMBER_OF_COLOR_PLANES] = 1;
+    dib_header[INDEX_NUMBER_OF_BITS_PER_PIXEL] = NUMBER_OF_BITS_PER_PIXEL;
 
-    f.write(reinterpret_cast<char *>(bmp_header), bmp_header_size_);
-    f.write(reinterpret_cast<char *>(dib_header), dib_header_size_);
+    f.write(reinterpret_cast<char *>(bmp_header), static_cast<int64_t>(bmp_header_size_));
+    f.write(reinterpret_cast<char *>(dib_header), static_cast<int64_t>(dib_header_size_));
 
     for (size_t y = 0; y < height_; ++y) {
         for (size_t x = 0; x < width_; ++x) {
             unsigned char color[3];
-            color[2] = static_cast<unsigned char>(GetColor(x, y).r * 255);
-            color[1] = static_cast<unsigned char>(GetColor(x, y).g * 255);
-            color[0] = static_cast<unsigned char>(GetColor(x, y).b * 255);
+            color[2] = static_cast<unsigned char>(GetColor(x, y).r * RGB);
+            color[1] = static_cast<unsigned char>(GetColor(x, y).g * RGB);
+            color[0] = static_cast<unsigned char>(GetColor(x, y).b * RGB);
 
             f.write(reinterpret_cast<char *>(color), 3);
         }
-        f.write(reinterpret_cast<char *>(bmp_pad), padding_amount_);
+        f.write(reinterpret_cast<char *>(bmp_pad), static_cast<int64_t>(padding_amount_));
     }
     f.close();
 }
@@ -116,16 +120,16 @@ size_t Bmp::GetHeight() const {
 size_t Bmp::GetWidth() const {
     return width_;
 }
-size_t Bmp::GetBmpHeaderSize() const {
-    return bmp_header_size_;
+const size_t Bmp::GetBmpHeaderSize() const {
+    return BMP_HEADER_SIZE;
 }
-size_t Bmp::GetDibHeaderSize() const {
-    return dib_header_size_;
+const size_t Bmp::GetDibHeaderSize() const {
+    return DIB_HEADER_SIZE;
 }
 
 Color &Bmp::operator[](size_t i) {
     return colors_[i];
-};
+}
 
 void Bmp::ChangePrivateVectorOfColors(std::vector<Color> new_colors) {
     colors_ = new_colors;
