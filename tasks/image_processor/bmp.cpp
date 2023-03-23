@@ -39,8 +39,7 @@ void Bmp::Read(const char *path) {
     ReadNBytes(information_header, EIGHT, 4, height_);
 
     colors_.resize(width_ * height_);
-
-    padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
+    SetPaddingAmount();
 
     for (int y = 0; y < height_; ++y) {
         for (int x = 0; x < width_; ++x) {
@@ -144,6 +143,10 @@ void Bmp::SetWidth(size_t new_width) {
     width_ = new_width;
 }
 
-void Bmp::SetPaddingAmount(size_t new_padding) {
-    padding_amount_ = new_padding;
+void Bmp::SetPaddingAmount() {
+    padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
+
+}
+size_t Bmp::GetPadding() const {
+    return padding_amount_;
 }

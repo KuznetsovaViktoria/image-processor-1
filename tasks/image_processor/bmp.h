@@ -17,6 +17,7 @@ public:
     Color GetColor(size_t x, size_t y) const;
     size_t GetHeight() const;
     size_t GetWidth() const;
+    size_t GetPadding() const;
     const size_t GetBmpHeaderSize() const;
     const size_t GetDibHeaderSize() const;
     Color& operator[](size_t);
@@ -24,7 +25,7 @@ public:
     void SetHeight(size_t new_height);
     void SetWidth(size_t new_width);
     void SetFileSize(size_t new_size);
-    void SetPaddingAmount(size_t new_padding);
+    void SetPaddingAmount();
 
 private:
     size_t width_;

@@ -9,8 +9,6 @@ void Crop::ApplyFilter(Bmp &image, std::vector<double> args) {
     std::vector<Color> new_colors;
     new_colors.resize(new_width * new_height);
 
-    image.SetPaddingAmount((4 - (new_width * 3) % 4) % 4);
-
     for (size_t y = 0; y < new_height; ++y) {
         for (size_t x = 0; x < new_width; ++x) {
             new_colors[(new_height - 1 - y) * new_width + x] = image.GetColor(x, (image.GetHeight() - 1 - y));
@@ -18,8 +16,8 @@ void Crop::ApplyFilter(Bmp &image, std::vector<double> args) {
     }
     image.SetWidth(new_width);
     image.SetHeight(new_height);
-    image.SetWidth(new_width);
+    image.SetPaddingAmount();
     image.ChangePrivateVectorOfColors(new_colors);
     image.SetFileSize(image.GetBmpHeaderSize() + image.GetDibHeaderSize() + new_width * new_height * 3 +
-                      ((4 - (new_width * 3) % 4) % 4) * new_height);
+                      image.GetPadding() * new_height);
 }
