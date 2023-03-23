@@ -7,36 +7,20 @@ void MatrixFilter::ApplyFilter(Bmp& image, std::vector<double> args) {
             long double r = 0;
             long double g = 0;
             long double b = 0;
-            std::vector<std::pair<int8_t, int8_t>> d = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0},
-                                                        {1, 0},   {-1, 1}, {0, 1},  {1, 1}};
-            for (size_t i = 0; i < d.size(); ++i) {
-                if (0 <= x + d[i].first && x + d[i].first < image.GetWidth() && 0 <= y + d[i].second &&
-                    y + d[i].second < image.GetHeight()) {
-                    r += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).r;
-                    g += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).g;
-                    b += GetCoef(i) * image.GetColor(x + d[i].first, y + d[i].second).b;
+            for (size_t i = 0; i < delta_.size(); ++i) {
+                if (0 <= x + delta_[i].first && x + delta_[i].first < image.GetWidth() && 0 <= y + delta_[i].second &&
+                    y + delta_[i].second < image.GetHeight()) {
+                    r += GetCoef(i) * image.GetColor(x + delta_[i].first, y + delta_[i].second).r;
+                    g += GetCoef(i) * image.GetColor(x + delta_[i].first, y + delta_[i].second).g;
+                    b += GetCoef(i) * image.GetColor(x + delta_[i].first, y + delta_[i].second).b;
                 } else {
                     r += GetCoef(i) * image.GetColor(x, y).r;
                     g += GetCoef(i) * image.GetColor(x, y).g;
                     b += GetCoef(i) * image.GetColor(x, y).b;
                 }
             }
-            if (r < 0) {
-                r = 0;
-            } else if (r > 1) {
-                r = 1;
-            }
-            if (g < 0) {
-                g = 0;
-            } else if (g > 1) {
-                g = 1;
-            }
-            if (b < 0) {
-                b = 0;
-            } else if (b > 1) {
-                b = 1;
-            }
             new_colors[y * image.GetWidth() + x] = Color(r, g, b);
+            NormalizeColor(new_colors[y * image.GetWidth() + x]);
         }
     }
     image.ChangePrivateVectorOfColors(new_colors);

@@ -8,4 +8,5 @@ add_executable(
         sharpening.cpp
         edgeDetection.cpp
         gaussianBlur.cpp
-        crop.cpp)
+        crop.cpp
+        filter.cpp)

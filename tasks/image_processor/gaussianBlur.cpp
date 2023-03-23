@@ -1,26 +1,9 @@
 #include "gaussianBlur.h"
+#include "filter.h"
 #include <cmath>
 
 long double Blur::CountCoefficient(int64_t x0, int64_t x) const {
     return exp(-static_cast<double>((x0 - x) * (x0 - x)) / (2 * sigma_ * sigma_));
-}
-
-void Blur::NormilizeColor(Color& i) {
-    if (i.r < 0) {
-        i.r = 0;
-    } else if (i.r > 1) {
-        i.r = 1;
-    }
-    if (i.g < 0) {
-        i.g = 0;
-    } else if (i.g > 1) {
-        i.g = 1;
-    }
-    if (i.b < 0) {
-        i.b = 0;
-    } else if (i.b > 1) {
-        i.b = 1;
-    }
 }
 
 void Blur::ApplyFilter(Bmp& image, std::vector<double> args) {
@@ -57,7 +40,7 @@ void Blur::ApplyFilter(Bmp& image, std::vector<double> args) {
         }
     }
     for (Color& i : new_colors) {
-        NormilizeColor(i);
+        NormalizeColor(i);
     }
     image.ChangePrivateVectorOfColors(new_colors);
 }

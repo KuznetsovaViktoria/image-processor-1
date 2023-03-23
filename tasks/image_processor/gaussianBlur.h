@@ -9,5 +9,4 @@ public:
 
 private:
     double sigma_ = 1;
-    void NormilizeColor(Color& c);
 };
