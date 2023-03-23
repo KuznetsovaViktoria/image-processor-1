@@ -47,7 +47,6 @@ int main(int argc, char* argv[]) {
                     ++i;
                 }
             }
-            // later need to add checking for errors and incorrect data
         }
         bmp.Read(read_file);
         for (int i = 0; i < static_cast<int>(filters.size()); ++i) {
@@ -55,6 +54,8 @@ int main(int argc, char* argv[]) {
             filters[i]->ApplyFilter(bmp, args[i]);
         }
         bmp.Export(export_file);
+    } catch (const std::runtime_error& e) {
+        std::cout << e.what();
     } catch (...) {
         std::cout << "some problem\n";
     }

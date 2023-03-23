@@ -19,17 +19,15 @@ void Bmp::Read(const char *path) {
     std::ifstream f;
     f.open(path, std::ios::in | std::ios::binary);
     if (!f.is_open()) {
-        std::cout << "This file couldn't be read\n";
-        return;
+        throw std::runtime_error("This file couldn't be read\n");
     }
 
     unsigned char file_header[bmp_header_size_];
     f.read(reinterpret_cast<char *>(file_header), static_cast<int64_t>(bmp_header_size_));
 
     if (file_header[0] != 'B' || file_header[1] != 'M') {
-        std::cout << "The file is not a .bmp file\n";
         f.close();
-        return;
+        throw std::runtime_error("The file is not a .bmp file\n");
     }
 
     unsigned char information_header[dib_header_size_];
@@ -71,8 +69,7 @@ const size_t NUMBER_OF_BITS_PER_PIXEL = 24;
 void Bmp::Export(const char *path) const {
     std::ofstream f(static_cast<std::string>(path), std::ios::binary);
     if (!f.is_open()) {
-        std::cout << "This file couldn't be opened\n";
-        return;
+        throw std::runtime_error("This file couldn't be opened\n");
     }
     unsigned char bmp_pad[3] = {0, 0, 0};
     unsigned char bmp_header[BMP_HEADER_SIZE] = {0};
@@ -145,7 +142,6 @@ void Bmp::SetWidth(size_t new_width) {
 
 void Bmp::SetPaddingAmount() {
     padding_amount_ = ((4 - (width_ * 3) % 4) % 4);
-
 }
 size_t Bmp::GetPadding() const {
     return padding_amount_;
