@@ -9,4 +9,4 @@ add_executable(
         edgeDetection.cpp
         gaussianBlur.cpp
         crop.cpp
-        filter.cpp)
+        filter.cpp rainbowFilter.h rainbowFilter.cpp)

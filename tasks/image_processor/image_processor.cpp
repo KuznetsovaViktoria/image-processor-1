@@ -3,14 +3,15 @@
 #include <vector>
 #include <memory>
 #include "filter.h"
+#include "matrixFilter.h"
 #include "bmp.h"
-// #include "matrixFilter.cpp"
 #include "grayscale.h"
 #include "negative.h"
 #include "crop.h"
 #include "sharpening.h"
 #include "edgeDetection.h"
 #include "gaussianBlur.h"
+#include "rainbowFilter.h"
 
 int main(int argc, char* argv[]) {
     Bmp bmp;
@@ -61,6 +62,9 @@ int main(int argc, char* argv[]) {
                     args.push_back({std::stod(argv[i + 1])});
                     filters.emplace_back(new Blur());
                     ++i;
+                } else if (f == "-rainbow") {
+                    args.push_back({});
+                    filters.emplace_back(new Rainbow());
                 }
             }
         }

@@ -1,5 +1,5 @@
 #include "sharpening.h"
 
-int8_t Sharpening::GetCoef(size_t i) {
-    return matrix_[i];
+const std::vector<int8_t>& Sharpening::GetMatrix() const {
+    return matrix_;
 }

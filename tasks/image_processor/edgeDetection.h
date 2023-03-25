@@ -5,7 +5,7 @@ class EdgeDetection : public MatrixFilter {
 
 public:
     ~EdgeDetection() override = default;
-    int8_t GetCoef(size_t i) override;
+    const std::vector<int8_t>& GetMatrix() const override;
     void CorrectColors(Bmp& image) const;
     void ApplyFilter(Bmp& image, std::vector<double> args) override;
 
