@@ -13,6 +13,44 @@
 #include "gaussianBlur.h"
 #include "rainbowFilter.h"
 
+void ParseArgs(const char*& read_file, const char*& export_file, std::vector<std::unique_ptr<Filter>>& filters,
+               std::vector<std::vector<double>>& args, int& argc, char* argv[]) {
+    for (int i = 0; i < argc; ++i) {
+        if (i == 1) {
+            read_file = argv[i];
+        } else if (i == 2) {
+            export_file = argv[i];
+        } else {
+            std::string f = argv[i];
+            if (f == "-crop") {
+                args.push_back({std::stod(argv[i + 1]), std::stod(argv[i + 2])});
+                filters.emplace_back(new Crop());
+                i += 2;
+            } else if (f == "-gs") {
+                args.push_back({});
+                filters.emplace_back(new Grayscale());
+            } else if (f == "-neg") {
+                args.push_back({});
+                filters.emplace_back(new Negative());
+            } else if (f == "-sharp") {
+                args.push_back({});
+                filters.emplace_back(new Sharpening());
+            } else if (f == "-edge") {
+                args.push_back({std::stod(argv[i + 1])});
+                filters.emplace_back(new EdgeDetection());
+                ++i;
+            } else if (f == "-blur") {
+                args.push_back({std::stod(argv[i + 1])});
+                filters.emplace_back(new Blur());
+                ++i;
+            } else if (f == "-rainbow") {
+                args.push_back({});
+                filters.emplace_back(new Rainbow());
+            }
+        }
+    }
+}
+
 int main(int argc, char* argv[]) {
     Bmp bmp;
     const char* read_file = nullptr;
@@ -28,46 +66,14 @@ int main(int argc, char* argv[]) {
                      "\t-gs Grayscale filter\n"
                      "\t-neg Negative filter\n"
                      "\t-sharp Sharpening\n"
-                     "\t-edge {threshhold} Edge Detection\n"
+                     "\t-edge {threshold} Edge Detection\n"
                      "\t-crop {width height} Crop Image\n"
-                     "\t-blur {sigma} Gaussian Blur\n";
+                     "\t-blur {sigma} Gaussian Blur\n"
+                     "\t-rainbow A nice rainbow chess ornament\n";
         return 0;
     }
     try {
-        for (int i = 0; i < argc; ++i) {
-            if (i == 1) {
-                read_file = argv[i];
-            } else if (i == 2) {
-                export_file = argv[i];
-            } else {
-                std::string f = argv[i];
-                if (f == "-crop") {
-                    args.push_back({std::stod(argv[i + 1]), std::stod(argv[i + 2])});
-                    filters.emplace_back(new Crop());
-                    i += 2;
-                } else if (f == "-gs") {
-                    args.push_back({});
-                    filters.emplace_back(new Grayscale());
-                } else if (f == "-neg") {
-                    args.push_back({});
-                    filters.emplace_back(new Negative());
-                } else if (f == "-sharp") {
-                    args.push_back({});
-                    filters.emplace_back(new Sharpening());
-                } else if (f == "-edge") {
-                    args.push_back({std::stod(argv[i + 1])});
-                    filters.emplace_back(new EdgeDetection());
-                    ++i;
-                } else if (f == "-blur") {
-                    args.push_back({std::stod(argv[i + 1])});
-                    filters.emplace_back(new Blur());
-                    ++i;
-                } else if (f == "-rainbow") {
-                    args.push_back({});
-                    filters.emplace_back(new Rainbow());
-                }
-            }
-        }
+        ParseArgs(read_file, export_file, filters, args, argc, argv);
         bmp.Read(read_file);
         for (int i = 0; i < static_cast<int>(filters.size()); ++i) {
             filters[i]->ApplyFilter(bmp, args[i]);
