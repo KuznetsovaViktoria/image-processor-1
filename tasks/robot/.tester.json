@@ -1,8 +1,0 @@
-{
-    "allow_change": [
-        "*.cpp",
-        "*.h"
-    ],
-    "tests": "test_robot",
-    "solutions": "private"
-}
